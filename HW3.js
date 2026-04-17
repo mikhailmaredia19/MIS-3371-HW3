@@ -1,9 +1,9 @@
 /*
 Program name: HW3.js
 Name: Mikhail Maredia
-Date Created: [Current Date]
+Date Created: 4/16/26
 Version: 3.0
-Description: JS validation on-the-fly for HW3
+Description: JS validation for HW3
 */
 
 document.addEventListener("DOMContentLoaded", function() {
