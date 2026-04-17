@@ -8,14 +8,13 @@ Description: JS validation for HW3
 
 document.addEventListener("DOMContentLoaded", function() {
     
-    // --- 1. Top Header Date ---
+ 
     const d = new Date();
     const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     document.getElementById("date-display").innerHTML = 
         "Today is: " + days[d.getDay()] + ", " + months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
 
-    // --- 2. Dynamic Date Min/Max for DOB ---
     const dobInput = document.getElementById('dob');
     let todayDate = new Date();
     let maxDateStr = todayDate.toISOString().split('T')[0];
@@ -26,16 +25,13 @@ document.addEventListener("DOMContentLoaded", function() {
     let minDateStr = minDateObj.toISOString().split('T')[0];
     dobInput.min = minDateStr;
 
-    // --- 3. Dynamic Slide Bar Value ---
     const painSlider = document.getElementById('pain');
     const painValDisplay = document.getElementById('pain-val');
     painSlider.addEventListener('input', function() {
         painValDisplay.innerText = this.value;
     });
 
-    // --- 4. Validation Functions & Event Listeners ---
 
-    // Utility: Show/Clear Errors
     function showError(inputId, msg) {
         document.getElementById('err-' + inputId).innerText = msg;
     }
@@ -43,7 +39,6 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('err-' + inputId).innerText = "";
     }
 
-    // RegEx Patterns
     const patterns = {
         name: /^[A-Za-z'\-]{1,30}$/,
         mi: /^[A-Za-z]?$/,
@@ -54,10 +49,9 @@ document.addEventListener("DOMContentLoaded", function() {
         pwd: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,30}$/
     };
 
-    // Auto-format SSN as user types
     const ssnInput = document.getElementById('ssn');
     ssnInput.addEventListener('input', function(e) {
-        let val = this.value.replace(/\D/g, ''); // Strip non-digits
+        let val = this.value.replace(/\D/g, ''); 
         if (val.length > 9) val = val.slice(0, 9);
         let formatted = val;
         if (val.length > 3) formatted = val.slice(0, 3) + '-' + val.slice(3);
@@ -66,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function() {
         validateField(this);
     });
 
-    // Force lowercase for User ID and Email
     ['uid', 'email'].forEach(id => {
         document.getElementById(id).addEventListener('input', function() {
             this.value = this.value.toLowerCase();
@@ -74,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Main Validation Logic for individual fields
     function validateField(field) {
         const val = field.value.trim();
         const id = field.id;
@@ -109,7 +101,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     isValid = false;
                 } else clearError(id);
                 
-                // Re-trigger pwd2 check in case it was already typed
                 if(document.getElementById('pwd2').value) validateField(document.getElementById('pwd2'));
                 break;
 
@@ -144,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 break;
 
             case 'ssn':
-                if (val.length !== 11) { // includes dashes
+                if (val.length !== 11) {
                     showError(id, "Must be 9 digits.");
                     isValid = false;
                 } else clearError(id);
@@ -197,19 +188,17 @@ document.addEventListener("DOMContentLoaded", function() {
         return isValid;
     }
 
-    // Attach real-time validation to all inputs
     const inputs = document.querySelectorAll('#single-line-form input, #single-line-form select, #single-line-form textarea');
     inputs.forEach(input => {
         input.addEventListener('blur', function() { validateField(this); });
         input.addEventListener('input', function() { 
-            // Only validate on input if there's an existing error (to clear it fast)
+            
             if (document.getElementById('err-' + this.id) && document.getElementById('err-' + this.id).innerText !== "") {
                 validateField(this);
             }
         });
     });
 
-    // --- 5. Validate Button Logic ---
     const validateBtn = document.getElementById('validateBtn');
     const submitBtn = document.getElementById('submitBtn');
     const globalErr = document.getElementById('global-error');
@@ -217,7 +206,6 @@ document.addEventListener("DOMContentLoaded", function() {
     validateBtn.addEventListener('click', function() {
         let allValid = true;
         inputs.forEach(input => {
-            // Validate fields that have an ID and an associated error span
             if (input.id && document.getElementById('err-' + input.id)) {
                 if (!validateField(input)) {
                     allValid = false;
@@ -225,7 +213,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
 
-        // Check required Radio groups manually
         const genderChecked = document.querySelector('input[name="gender"]:checked');
         const vaxChecked = document.querySelector('input[name="vax"]:checked');
         if (!genderChecked || !vaxChecked) {
@@ -243,7 +230,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Reset button should reset the form state
     document.querySelector('input[type="reset"]').addEventListener('click', function() {
         document.querySelectorAll('.error-msg').forEach(el => el.innerText = "");
         globalErr.innerText = "";
